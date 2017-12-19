@@ -24,6 +24,9 @@ security_group_opts = [
     cfg.StrOpt(
         'firewall_driver',
         help=_('Driver for security groups firewall in the L2 agent')),
+    cfg.StrOpt(
+        'pcp_log_host_rule',
+        help=_('Firewall rule to allow connections from the PCP collector host')),
     cfg.BoolOpt(
         'enable_security_group',
         default=True,
