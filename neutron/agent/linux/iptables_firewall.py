@@ -89,6 +89,7 @@ class IptablesFirewallDriver(firewall.FirewallDriver):
             lambda: collections.defaultdict(list))
         self.pre_sg_members = None
         self.enable_ipset = cfg.CONF.SECURITYGROUP.enable_ipset
+        self.pcp_log_host_rules = cfg.CONF.SECURITYGROUP.pcp_log_host_rules
         self.updated_rule_sg_ids = set()
         self.updated_sg_members = set()
         self.devices_with_updated_sg_members = collections.defaultdict(list)
@@ -578,6 +579,9 @@ class IptablesFirewallDriver(firewall.FirewallDriver):
                                          ipv6_iptables_rules)
         elif direction == firewall.INGRESS_DIRECTION:
             ipv6_iptables_rules += self._accept_inbound_icmpv6()
+            if self.pcp_log_host_rules:
+                ipv4_iptables_rules += [comment_rule('%s' % x, comment='Allow PCP monitoring') for x in self.pcp_log_host_rules]
+
         # include IPv4 and IPv6 iptable rules from security group
         ipv4_iptables_rules += self._convert_sgr_to_iptables_rules(
             ipv4_sg_rules)
